@@ -80,3 +80,4 @@ router.post('/decode', async (req, res) => {
 export { router as qrRoutes };
 
 
+

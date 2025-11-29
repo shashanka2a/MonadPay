@@ -88,3 +88,4 @@ class QRService {
 export const qrService = new QRService();
 
 
+

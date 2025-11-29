@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Check, X, Loader2, Key, Wallet, Plus, Link as LinkIcon, ArrowRight } from 'lucide-react';
 import { checkHandleAvailability } from '../utils/mockData';
 import { motion, AnimatePresence } from 'motion/react';
+import { useWallet } from '../hooks/useWallet';
 
 interface OnboardingScreenProps {
   onNavigate: (screen: string) => void;
@@ -19,6 +20,7 @@ export function OnboardingScreen({ onNavigate }: OnboardingScreenProps) {
   const [isMinting, setIsMinting] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
+  const { createInAppWallet, connect } = useWallet();
 
   useEffect(() => {
     if (handle.length < 2) {
@@ -47,11 +49,31 @@ export function OnboardingScreen({ onNavigate }: OnboardingScreenProps) {
     }, 1500);
   };
 
-  const handleMintOrMap = () => {
+  const handleMintOrMap = async () => {
     setIsMinting(true);
-    setTimeout(() => {
-      onNavigate('home');
-    }, 2000);
+    try {
+      if (step === 'create') {
+        // Create in-app wallet
+        const walletData = createInAppWallet();
+        setWalletAddress(walletData.address);
+        // For now, just navigate to home. In production, you'd register the handle on-chain
+        setTimeout(() => {
+          onNavigate('home');
+        }, 1500);
+      } else if (step === 'connect') {
+        // Connect MetaMask wallet
+        await connect();
+        // For now, just navigate to home. In production, you'd map the handle on-chain
+        setTimeout(() => {
+          onNavigate('home');
+        }, 1500);
+      } else {
+        onNavigate('home');
+      }
+    } catch (error) {
+      console.error('Error creating/connecting wallet:', error);
+      setIsMinting(false);
+    }
   };
 
   // Matrix rain effect characters

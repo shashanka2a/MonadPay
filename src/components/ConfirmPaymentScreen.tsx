@@ -20,7 +20,7 @@ export function ConfirmPaymentScreen({ onNavigate, data }: ConfirmPaymentScreenP
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { recipient, amount, note } = data;
-  const { isConnected, address } = useWallet();
+  const { isConnected, address, hasInAppWallet, updateBalance } = useWallet();
 
   // Get contract addresses from environment or use defaults
   const PAYMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_PAYMENT_CONTRACT_ADDRESS || '';
@@ -30,8 +30,31 @@ export function ConfirmPaymentScreen({ onNavigate, data }: ConfirmPaymentScreenP
   const total = amount + estimatedGas;
 
   const handleConfirm = async () => {
+    // Check if wallet is connected (either MetaMask or in-app wallet)
+    let walletReady = isConnected;
+    
     if (!isConnected) {
-      setError('Please connect your wallet first');
+      // Try to load in-app wallet if it exists
+      if (hasInAppWallet) {
+        try {
+          await walletService.loadInAppWallet();
+          walletReady = true;
+          // Update balance to refresh state
+          await updateBalance();
+        } catch (error) {
+          setError('Failed to load wallet. Please try again.');
+          return;
+        }
+      } else {
+        setError('Please connect your wallet first');
+        return;
+      }
+    }
+
+    // Final check - ensure we have a signer
+    const walletState = walletService.getWalletState();
+    if (!walletState.signer && !walletState.isInAppWallet) {
+      setError('Wallet not ready. Please try again.');
       return;
     }
 

@@ -30,6 +30,19 @@ export function useWallet() {
   // Check connection on mount
   useEffect(() => {
     const checkConnection = async () => {
+      // First check for in-app wallet
+      if (walletService.hasInAppWallet()) {
+        try {
+          const state = await walletService.loadInAppWallet();
+          setWalletState(state);
+          await updateBalance();
+          return;
+        } catch (error) {
+          console.error('Error loading in-app wallet:', error);
+        }
+      }
+
+      // Then check for MetaMask
       if (walletService.isMetaMaskInstalled()) {
         try {
           const provider = new (await import('ethers')).BrowserProvider(window.ethereum!);
@@ -105,8 +118,15 @@ export function useWallet() {
       provider: null,
       signer: null,
       chainId: null,
+      isInAppWallet: false,
     });
     setBalance('0');
+  }, []);
+
+  const createInAppWallet = useCallback(() => {
+    const walletData = walletService.createInAppWallet();
+    setWalletState(walletService.getWalletState());
+    return walletData;
   }, []);
 
   return {
@@ -117,7 +137,9 @@ export function useWallet() {
     connect,
     disconnect,
     updateBalance,
+    createInAppWallet,
     isMetaMaskInstalled: walletService.isMetaMaskInstalled(),
+    hasInAppWallet: walletService.hasInAppWallet(),
   };
 }
 

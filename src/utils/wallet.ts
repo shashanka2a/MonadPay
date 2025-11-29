@@ -32,7 +32,10 @@ export interface WalletState {
   provider: ethers.BrowserProvider | null;
   signer: ethers.JsonRpcSigner | null;
   chainId: number | null;
+  isInAppWallet?: boolean; // Flag to indicate if this is an in-app wallet
 }
+
+const STORAGE_KEY = 'monadpay_inapp_wallet';
 
 class WalletService {
   private state: WalletState = {
@@ -41,13 +44,117 @@ class WalletService {
     provider: null,
     signer: null,
     chainId: null,
+    isInAppWallet: false,
   };
+  private inAppWallet: ethers.HDNodeWallet | ethers.Wallet | null = null;
+  private inAppProvider: ethers.JsonRpcProvider | null = null;
 
   /**
    * Check if MetaMask is installed
    */
   isMetaMaskInstalled(): boolean {
     return typeof window !== 'undefined' && typeof window.ethereum !== 'undefined';
+  }
+
+  /**
+   * Check if in-app wallet exists
+   */
+  hasInAppWallet(): boolean {
+    if (typeof window === 'undefined') return false;
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored !== null;
+  }
+
+  /**
+   * Create a new in-app wallet
+   */
+  createInAppWallet(): { address: string; mnemonic: string; privateKey: string } {
+    const wallet = ethers.Wallet.createRandom();
+    const mnemonic = wallet.mnemonic?.phrase || '';
+    
+    // Store encrypted private key (for testnet, we can store it directly)
+    // In production, you should encrypt this
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        address: wallet.address,
+        privateKey: wallet.privateKey,
+        mnemonic: mnemonic,
+      }));
+    }
+
+    this.inAppWallet = wallet;
+    this.inAppProvider = new ethers.JsonRpcProvider(MONAD_TESTNET.rpcUrls[0]);
+    
+    this.state = {
+      isConnected: true,
+      address: wallet.address,
+      provider: this.inAppProvider as any, // Type assertion for compatibility
+      signer: wallet.connect(this.inAppProvider) as any,
+      chainId: 10140,
+      isInAppWallet: true,
+    };
+
+    return {
+      address: wallet.address,
+      mnemonic,
+      privateKey: wallet.privateKey,
+    };
+  }
+
+  /**
+   * Load in-app wallet from storage
+   */
+  async loadInAppWallet(): Promise<WalletState> {
+    if (typeof window === 'undefined') {
+      throw new Error('Cannot load wallet in server environment');
+    }
+
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) {
+      throw new Error('No in-app wallet found');
+    }
+
+    try {
+      const walletData = JSON.parse(stored);
+      const wallet = new ethers.Wallet(walletData.privateKey);
+      
+      this.inAppWallet = wallet;
+      this.inAppProvider = new ethers.JsonRpcProvider(MONAD_TESTNET.rpcUrls[0]);
+      const signer = wallet.connect(this.inAppProvider);
+
+      this.state = {
+        isConnected: true,
+        address: wallet.address,
+        provider: this.inAppProvider as any,
+        signer: signer as any,
+        chainId: 10140,
+        isInAppWallet: true,
+      };
+
+      return this.state;
+    } catch (error) {
+      console.error('Error loading in-app wallet:', error);
+      throw new Error('Failed to load in-app wallet');
+    }
+  }
+
+  /**
+   * Clear in-app wallet (for logout/disconnect)
+   */
+  clearInAppWallet(): void {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    this.inAppWallet = null;
+    this.inAppProvider = null;
+    this.state = {
+      isConnected: false,
+      address: null,
+      provider: null,
+      signer: null,
+      chainId: null,
+      isInAppWallet: false,
+    };
   }
 
   /**
@@ -131,29 +238,37 @@ class WalletService {
    * Disconnect wallet
    */
   disconnectWallet(): void {
-    this.state = {
-      isConnected: false,
-      address: null,
-      provider: null,
-      signer: null,
-      chainId: null,
-    };
+    // If it's an in-app wallet, clear it
+    if (this.state.isInAppWallet) {
+      this.clearInAppWallet();
+    } else {
+      this.state = {
+        isConnected: false,
+        address: null,
+        provider: null,
+        signer: null,
+        chainId: null,
+        isInAppWallet: false,
+      };
+    }
   }
 
   /**
    * Get balance in MON
    */
   async getBalance(address?: string): Promise<string> {
-    if (!this.state.provider) {
-      throw new Error('Wallet not connected');
-    }
-
     const targetAddress = address || this.state.address;
     if (!targetAddress) {
       throw new Error('No address provided');
     }
 
-    const balance = await this.state.provider.getBalance(targetAddress);
+    // Use in-app provider if available, otherwise use state provider
+    const provider = this.inAppProvider || this.state.provider;
+    if (!provider) {
+      throw new Error('Wallet not connected');
+    }
+
+    const balance = await provider.getBalance(targetAddress);
     return ethers.formatEther(balance);
   }
 
@@ -166,14 +281,19 @@ class WalletService {
     note: string,
     paymentContractAddress: string
   ): Promise<ethers.ContractTransactionResponse> {
-    if (!this.state.signer) {
+    // Use in-app signer if available, otherwise use state signer
+    const signer = (this.inAppWallet && this.inAppProvider) 
+      ? this.inAppWallet.connect(this.inAppProvider)
+      : this.state.signer;
+
+    if (!signer) {
       throw new Error('Wallet not connected');
     }
 
     const paymentContract = new ethers.Contract(
       paymentContractAddress,
       PAYMENT_CONTRACT_ABI,
-      this.state.signer
+      signer
     );
 
     const amountWei = ethers.parseEther(amount);
@@ -199,14 +319,19 @@ class WalletService {
     note: string,
     paymentContractAddress: string
   ): Promise<ethers.ContractTransactionResponse> {
-    if (!this.state.signer) {
+    // Use in-app signer if available, otherwise use state signer
+    const signer = (this.inAppWallet && this.inAppProvider) 
+      ? this.inAppWallet.connect(this.inAppProvider)
+      : this.state.signer;
+
+    if (!signer) {
       throw new Error('Wallet not connected');
     }
 
     const paymentContract = new ethers.Contract(
       paymentContractAddress,
       PAYMENT_CONTRACT_ABI,
-      this.state.signer
+      signer
     );
 
     const amountWei = ethers.parseEther(amount);
@@ -230,14 +355,16 @@ class WalletService {
     handle: string,
     handleRegistryAddress: string
   ): Promise<string> {
-    if (!this.state.provider) {
+    // Use in-app provider if available, otherwise use state provider
+    const provider = this.inAppProvider || this.state.provider;
+    if (!provider) {
       throw new Error('Wallet not connected');
     }
 
     const registryContract = new ethers.Contract(
       handleRegistryAddress,
       HANDLE_REGISTRY_ABI,
-      this.state.provider
+      provider
     );
 
     try {
@@ -253,11 +380,13 @@ class WalletService {
    * Wait for transaction confirmation
    */
   async waitForTransaction(txHash: string): Promise<ethers.TransactionReceipt> {
-    if (!this.state.provider) {
+    // Use in-app provider if available, otherwise use state provider
+    const provider = this.inAppProvider || this.state.provider;
+    if (!provider) {
       throw new Error('Wallet not connected');
     }
 
-    const receipt = await this.state.provider.waitForTransaction(txHash);
+    const receipt = await provider.waitForTransaction(txHash);
     if (!receipt) {
       throw new Error('Transaction receipt not found');
     }
