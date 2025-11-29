@@ -12,6 +12,9 @@ interface SuccessScreenProps {
     amount: number;
     duration: number;
     gasUsed: number;
+    txHash?: string;
+    blockNumber?: bigint;
+    note?: string;
   };
 }
 

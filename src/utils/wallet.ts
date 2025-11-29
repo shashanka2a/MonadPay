@@ -54,12 +54,12 @@ class WalletService {
    * Connect to MetaMask wallet
    */
   async connectWallet(): Promise<WalletState> {
-    if (!this.isMetaMaskInstalled()) {
+    if (!this.isMetaMaskInstalled() || !window.ethereum) {
       throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
     }
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as ethers.Eip1193Provider);
       const accounts = await provider.send('eth_requestAccounts', []);
       
       if (accounts.length === 0) {
@@ -94,7 +94,7 @@ class WalletService {
    * Switch to Monad Testnet
    */
   async switchToMonadTestnet(): Promise<void> {
-    if (!this.isMetaMaskInstalled()) {
+    if (!this.isMetaMaskInstalled() || !window.ethereum) {
       throw new Error('MetaMask is not installed');
     }
 
@@ -107,7 +107,7 @@ class WalletService {
       // If chain doesn't exist, add it
       if (switchError.code === 4902) {
         try {
-          await window.ethereum.request({
+          await window.ethereum!.request({
             method: 'wallet_addEthereumChain',
             params: [MONAD_TESTNET],
           });
@@ -257,7 +257,11 @@ class WalletService {
       throw new Error('Wallet not connected');
     }
 
-    return await this.state.provider.waitForTransaction(txHash);
+    const receipt = await this.state.provider.waitForTransaction(txHash);
+    if (!receipt) {
+      throw new Error('Transaction receipt not found');
+    }
+    return receipt;
   }
 }
 
