@@ -1,12 +1,12 @@
-# MonadPay Smart Contracts
+# monadpay Smart Contracts
 
-Smart contracts for the MonadPay payment application on Monad blockchain.
+Smart contracts for the monadpay payment application on Monad blockchain.
 
 ## Contracts
 
 ### 1. HandleRegistry.sol
 
-Manages MonadPay handles (@username) and their mappings to wallet addresses.
+Manages monadpay handles (@username) and their mappings to wallet addresses.
 
 **Key Functions:**
 - `claimHandle(string handle)` - Claim a new handle (for new wallets)

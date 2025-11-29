@@ -1,7 +1,7 @@
-# MonadVenmo User Flow Documentation
+# monadpay User Flow Documentation
 
 ## Overview
-MonadVenmo is a social payments PWA built on Monad blockchain with 11 interconnected screens, featuring a comprehensive onboarding system, transaction flows, and account management.
+monadpay is a social payments PWA built on Monad blockchain with 11 interconnected screens, featuring a comprehensive onboarding system, transaction flows, and account management.
 
 ---
 
@@ -19,7 +19,7 @@ Home Screen (main app interface)
 ```
 
 **Splash Screen**
-- Displays MonadVenmo logo with animated gradient
+- Displays monadpay logo with animated gradient
 - Matrix rain background effect
 - Auto-advances to Tutorial after 2-3 seconds
 
@@ -434,7 +434,7 @@ QR Code Detected
 │  │                               │  │
 │  └───────────────────────────────┘  │
 │                                     │
-│  Scan a MonadVenmo QR code         │
+│  Scan a monadpay QR code         │
 │                                     │
 │  ┌─────────────────────────────┐   │
 │  │  [Flash] [Gallery]          │   │
@@ -603,7 +603,7 @@ Transaction Detail Screen
 │                                     │
 │  About                             │
 │  ┌─────────────────────────────┐   │
-│  │ ℹ️ About MonadVenmo         │   │
+│  │ ℹ️ About monadpay         │   │
 │  │ 📄 Terms of Service         │   │
 │  │ 🔒 Privacy Policy           │   │
 │  │ 🚪 Logout                   │   │

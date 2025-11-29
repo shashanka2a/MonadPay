@@ -1,4 +1,4 @@
-# MonadPay Payment App
+# monadpay Payment App
 
 A modern payment application built with Next.js, React, and TypeScript.
 

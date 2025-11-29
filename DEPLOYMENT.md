@@ -1,6 +1,6 @@
-# MonadPay Deployment Guide
+# monadpay Deployment Guide
 
-Complete guide for deploying MonadPay smart contracts and middleware.
+Complete guide for deploying monadpay smart contracts and middleware.
 
 ## Prerequisites
 

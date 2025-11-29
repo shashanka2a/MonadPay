@@ -1,7 +1,7 @@
 {
   "name": "monadpay-middleware",
   "version": "1.0.0",
-  "description": "Middleware API for MonadPay payment app",
+  "description": "Middleware API for monadpay payment app",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",

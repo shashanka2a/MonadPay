@@ -1,6 +1,6 @@
-# MonadPay Architecture
+# monadpay Architecture
 
-Complete system architecture for MonadPay payment application.
+Complete system architecture for monadpay payment application.
 
 ## System Overview
 
@@ -263,7 +263,7 @@ Recipient fulfills request
 ## File Structure
 
 ```
-MonadPay Payment App/
+monadpay Payment App/
 ├── app/                    # Next.js App Router
 ├── src/                    # React components
 ├── contracts/              # Solidity contracts
@@ -298,5 +298,5 @@ MonadPay Payment App/
 
 ## Conclusion
 
-This architecture provides a scalable, secure foundation for MonadPay. The separation of concerns (frontend, middleware, contracts) allows for independent development and deployment.
+This architecture provides a scalable, secure foundation for monadpay. The separation of concerns (frontend, middleware, contracts) allows for independent development and deployment.
 

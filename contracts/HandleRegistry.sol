@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 /**
  * @title HandleRegistry
- * @notice Manages MonadPay handles (@username) and their mappings to wallet addresses
+ * @notice Manages monadpay handles (@username) and their mappings to wallet addresses
  * @dev Handles are unique identifiers that map to wallet addresses on Monad blockchain
  */
 contract HandleRegistry {

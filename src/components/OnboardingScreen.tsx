@@ -124,7 +124,7 @@ export function OnboardingScreen({ onNavigate }: OnboardingScreenProps) {
               </motion.div>
 
               <h1 className="text-4xl text-center mb-3">
-                Welcome to MonadVenmo
+                Welcome to monadpay
               </h1>
               <p className="text-center text-[#94A3B8] mb-12">
                 Choose how you'd like to get started

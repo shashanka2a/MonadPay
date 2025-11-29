@@ -22,18 +22,18 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'MonadPay - Modern Payment App',
+  title: 'monadpay - Modern Payment App',
   description: 'Send, receive, and manage payments with ease. Modern payment app built for speed and security.',
   keywords: ['payment', 'wallet', 'fintech', 'money transfer', 'digital payments'],
-  authors: [{ name: 'MonadPay' }],
+  authors: [{ name: 'monadpay' }],
   openGraph: {
-    title: 'MonadPay - Modern Payment App',
+    title: 'monadpay - Modern Payment App',
     description: 'Send, receive, and manage payments with ease.',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MonadPay - Modern Payment App',
+    title: 'monadpay - Modern Payment App',
     description: 'Send, receive, and manage payments with ease.',
   },
 };

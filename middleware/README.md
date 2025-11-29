@@ -1,6 +1,6 @@
-# MonadPay Middleware API
+# monadpay Middleware API
 
-Middleware API server for MonadPay payment application. Provides REST endpoints for interacting with Monad blockchain smart contracts.
+Middleware API server for monadpay payment application. Provides REST endpoints for interacting with Monad blockchain smart contracts.
 
 ## Features
 

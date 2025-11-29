@@ -66,7 +66,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         className="text-center relative z-10"
       >
         <h1 className="text-5xl mb-2 bg-gradient-to-r from-[#836EF9] to-[#4FFFFF] bg-clip-text text-transparent">
-          MonadVenmo
+          monadpay
         </h1>
         <p className="text-[#94A3B8] mono text-sm">Powered by Monad</p>
       </motion.div>

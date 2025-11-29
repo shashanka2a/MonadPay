@@ -50,7 +50,7 @@ export function RequestScreen({ onNavigate }: RequestScreenProps) {
   const handleShare = async () => {
     if (navigator.share) {
       await navigator.share({
-        title: 'MonadPay Request',
+        title: 'monadpay Request',
         text: `${currentUser.handle} is requesting $${amount}${note ? ` for ${note}` : ''}`,
         url: requestLink
       });

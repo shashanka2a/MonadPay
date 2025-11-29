@@ -38,7 +38,7 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 MonadPay Middleware API running on port ${PORT}`);
+  console.log(`🚀 monadpay Middleware API running on port ${PORT}`);
   console.log(`📡 RPC URL: ${process.env.MONAD_RPC_URL || 'Not configured'}`);
 });
 

@@ -1,14 +1,14 @@
-# MonadVenmo - Complete User Flow Documentation
+# monadpay - Complete User Flow Documentation
 
 ## Overview
-MonadVenmo is a social payments PWA built on the Monad blockchain, combining Web2 UX familiarity with Web3 power.
+monadpay is a social payments PWA built on the Monad blockchain, combining Web2 UX familiarity with Web3 power.
 
 ## Complete User Journey
 
 ### 1. **Splash Screen**
 - **Duration**: 2 seconds
 - **Features**:
-  - Animated MonadVenmo logo with 3D rotation
+  - Animated monadpay logo with 3D rotation
   - Matrix rain effect background
   - Loading bar animation
   - Brand tagline: "10,000 TPS • Sub-cent fees • Instant finality"
