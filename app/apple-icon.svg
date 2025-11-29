@@ -1,0 +1,23 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="appleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#836EF9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4FFFFF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="180" height="180" rx="40" fill="#050505"/>
+  
+  <!-- Gradient circle -->
+  <circle cx="90" cy="90" r="85" fill="url(#appleGradient)" opacity="0.15"/>
+  
+  <!-- Minimal "M" -->
+  <path d="M 50 124 L 50 56 L 62 56 L 90 88 L 118 56 L 130 56 L 130 124 L 118 124 L 118 80 L 90 108 L 62 80 L 62 124 Z" 
+        fill="url(#appleGradient)" 
+        stroke="none"/>
+  
+  <!-- Accent -->
+  <circle cx="90" cy="135" r="4" fill="#4FFFFF"/>
+</svg>
+
