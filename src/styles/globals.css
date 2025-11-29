@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+:root {
+  --void-black: #050505;
+  --monad-purple: #836EF9;
+  --electric-cyan: #4FFFFF;
+  --cool-grey: #94A3B8;
+  --success-green: #10B981;
+  --danger-red: #EF4444;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--void-black);
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+button {
+  font-family: 'Inter', sans-serif;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+input {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Typography for balances and numbers */
+.balance {
+  font-family: 'Space Grotesk', sans-serif;
+  font-feature-settings: 'tnum' 1;
+}
