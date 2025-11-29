@@ -142,7 +142,7 @@ export function SendScreen({ onNavigate, data }: SendScreenProps & { data?: any 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="flex-1 flex flex-col justify-center px-6"
+          className="flex-1 flex flex-col justify-center px-6 pb-4"
         >
           <div className="text-center mb-4">
             <div className="balance text-6xl text-white mb-2">
@@ -152,7 +152,7 @@ export function SendScreen({ onNavigate, data }: SendScreenProps & { data?: any 
           </div>
 
           {/* Note Input */}
-          <div className="mb-8 px-4">
+          <div className="mb-6 px-4">
             <input
               type="text"
               value={note}
@@ -163,7 +163,7 @@ export function SendScreen({ onNavigate, data }: SendScreenProps & { data?: any 
           </div>
 
           {/* Numeric Keypad */}
-          <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto w-full">
+          <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto w-full mb-4">
             {['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '←'].map((key) => (
               <button
                 key={key}
@@ -182,11 +182,11 @@ export function SendScreen({ onNavigate, data }: SendScreenProps & { data?: any 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-6"
+          className="px-6 pb-28 pt-6"
         >
           <button
             onClick={handleSend}
-            className="w-full py-6 rounded-full bg-gradient-to-r from-[#836EF9] to-[#4FFFFF] text-white text-xl hover:opacity-90 transition-opacity"
+            className="w-full py-6 rounded-full bg-gradient-to-r from-[#836EF9] to-[#4FFFFF] text-white text-xl hover:opacity-90 transition-opacity shadow-lg"
           >
             Send to {recipient.handle}
           </button>

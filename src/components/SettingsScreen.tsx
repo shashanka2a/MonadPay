@@ -74,7 +74,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
         <h1 className="text-2xl">Settings</h1>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-6 pb-32 space-y-6">
         {/* Profile Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -53,7 +53,7 @@ export function TransactionDetailScreen({ onNavigate, transaction }: Transaction
         <h1 className="text-2xl">Transaction Details</h1>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-6 pb-32 space-y-6">
         {/* Status Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

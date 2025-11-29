@@ -108,7 +108,7 @@ export function ConfirmPaymentScreen({ onNavigate, data }: ConfirmPaymentScreenP
         <h1 className="text-2xl">Confirm Payment</h1>
       </div>
 
-      <div className="flex-1 px-6 py-8 flex flex-col justify-between">
+      <div className="flex-1 px-6 py-8 pb-28 flex flex-col justify-between">
         <div className="space-y-6">
           {/* Recipient Card */}
           <motion.div
@@ -209,7 +209,7 @@ export function ConfirmPaymentScreen({ onNavigate, data }: ConfirmPaymentScreenP
           transition={{ delay: 0.4 }}
           onClick={handleConfirm}
           disabled={isSending}
-          className="w-full py-6 rounded-full bg-gradient-to-r from-[#836EF9] to-[#4FFFFF] text-white text-xl hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-3"
+          className="w-full py-6 rounded-full bg-gradient-to-r from-[#836EF9] to-[#4FFFFF] text-white text-xl hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-3 shadow-lg"
         >
           {isSending ? (
             <>

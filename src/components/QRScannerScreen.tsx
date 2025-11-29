@@ -89,7 +89,7 @@ export function QRScannerScreen({ onNavigate }: QRScannerScreenProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           onClick={handleMockScan}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-full border-2 border-white/20 backdrop-blur-sm text-white hover:bg-white/10 transition-colors flex items-center gap-2 z-10"
+          className="absolute bottom-28 left-1/2 -translate-x-1/2 px-8 py-4 rounded-full border-2 border-white/20 backdrop-blur-sm text-white hover:bg-white/10 transition-colors flex items-center gap-2 z-10 shadow-lg"
         >
           <Upload className="w-5 h-5" />
           Upload from Gallery

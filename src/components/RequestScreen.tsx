@@ -71,7 +71,7 @@ export function RequestScreen({ onNavigate }: RequestScreenProps) {
           <h1 className="text-2xl">Payment Request</h1>
         </div>
 
-        <div className="flex-1 flex flex-col items-center justify-center px-6 pb-20">
+        <div className="flex-1 flex flex-col items-center justify-center px-6 pb-28">
           {/* QR Code */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -179,11 +179,11 @@ export function RequestScreen({ onNavigate }: RequestScreenProps) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-6"
+          className="px-6 pb-28 pt-6"
         >
           <button
             onClick={handleGenerateRequest}
-            className="w-full py-6 rounded-full bg-gradient-to-r from-[#836EF9] to-[#4FFFFF] text-white text-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+            className="w-full py-6 rounded-full bg-gradient-to-r from-[#836EF9] to-[#4FFFFF] text-white text-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-lg"
           >
             <QrCode className="w-6 h-6" />
             Generate QR Code
