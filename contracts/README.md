@@ -49,20 +49,39 @@ Manages payment requests (for QR code generation).
 
 ## Deployment
 
-1. Compile contracts:
+See [README-DEPLOYMENT.md](./README-DEPLOYMENT.md) for complete deployment guide.
+
+### Quick Start
+
+1. Install dependencies:
 ```bash
-npx hardhat compile
-# or
-solc --version
-solc contracts/*.sol --abi --bin
+npm install
 ```
 
-2. Deploy in order:
-   1. HandleRegistry
-   2. Payment (requires HandleRegistry address)
-   3. PaymentRequest (requires HandleRegistry address)
+2. Configure `.env`:
+```bash
+cp .env.example .env
+# Edit .env with your PRIVATE_KEY and RPC_URL
+```
 
-3. Update middleware `.env` with deployed addresses
+3. Compile contracts:
+```bash
+npm run compile
+```
+
+4. Deploy:
+```bash
+# Testnet
+npm run deploy:testnet
+
+# Mainnet
+npm run deploy:monad
+```
+
+The deployment script will:
+- Deploy all contracts in correct order
+- Save deployment info to `deployments/` folder
+- Automatically update middleware `.env` with addresses
 
 ## Testing
 
