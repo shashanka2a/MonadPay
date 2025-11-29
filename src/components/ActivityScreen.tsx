@@ -65,7 +65,7 @@ export function ActivityScreen({ onNavigate }: ActivityScreenProps) {
               <span className="text-[#94A3B8] text-sm">Received</span>
             </div>
             <p className="balance text-2xl text-[#10B981]">
-              +${totalReceived.toFixed(2)}
+              +{totalReceived.toFixed(4)} MON
             </p>
           </motion.div>
 
@@ -80,7 +80,7 @@ export function ActivityScreen({ onNavigate }: ActivityScreenProps) {
               <span className="text-[#94A3B8] text-sm">Sent</span>
             </div>
             <p className="balance text-2xl text-white">
-              -${totalSent.toFixed(2)}
+              -{totalSent.toFixed(4)} MON
             </p>
           </motion.div>
         </div>
@@ -156,7 +156,7 @@ export function ActivityScreen({ onNavigate }: ActivityScreenProps) {
                     </div>
                   </div>
                   <div className={`balance text-xl ${tx.type === 'received' ? 'text-[#10B981]' : 'text-white/70'}`}>
-                    {tx.type === 'received' ? '+' : '-'}${tx.amount.toFixed(2)}
+                    {tx.type === 'received' ? '+' : '-'}{tx.amount.toFixed(4)} MON
                   </div>
                 </div>
               </motion.div>

@@ -1,14 +1,33 @@
 'use client';
 
-import { ArrowLeft, User, Shield, Bell, Palette, HelpCircle, LogOut, ChevronRight } from 'lucide-react';
+import { ArrowLeft, User, Shield, Bell, Palette, HelpCircle, LogOut, ChevronRight, Wallet } from 'lucide-react';
 import { currentUser } from '../utils/mockData';
 import { motion } from 'motion/react';
+import { useWallet } from '../hooks/useWallet';
+import { useState } from 'react';
 
 interface SettingsScreenProps {
   onNavigate: (screen: string) => void;
 }
 
 export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
+  const { isConnected, address, connect, disconnect, balance, isLoading } = useWallet();
+  const [isConnecting, setIsConnecting] = useState(false);
+  const handleConnect = async () => {
+    setIsConnecting(true);
+    try {
+      await connect();
+    } catch (error) {
+      console.error('Failed to connect:', error);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const handleDisconnect = () => {
+    disconnect();
+  };
+
   const menuItems = [
     {
       icon: User,
@@ -74,10 +93,57 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
             <div className="flex-1">
               <p className="mono text-xl text-white">{currentUser.handle}</p>
               <p className="mono text-xs text-[#94A3B8] mt-1">
-                {currentUser.address.slice(0, 6)}...{currentUser.address.slice(-4)}
+                {isConnected && address ? address.slice(0, 6) + '...' + address.slice(-4) : currentUser.address.slice(0, 6) + '...' + currentUser.address.slice(-4)}
               </p>
             </div>
           </div>
+        </motion.div>
+
+        {/* Wallet Connection Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="bg-white/5 backdrop-blur-sm rounded-3xl p-6 border border-white/10"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                <Wallet className="w-5 h-5 text-[#4FFFFF]" />
+              </div>
+              <div>
+                <p className="text-white">Wallet</p>
+                <p className="text-[#94A3B8] text-sm">
+                  {isConnected ? 'Connected' : 'Not Connected'}
+                </p>
+              </div>
+            </div>
+            {isConnected && (
+              <div className="w-3 h-3 rounded-full bg-[#10B981]"></div>
+            )}
+          </div>
+          {isConnected ? (
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-[#94A3B8] text-sm">Balance</span>
+                <span className="balance text-white">{parseFloat(balance || '0').toFixed(4)} MON</span>
+              </div>
+              <button
+                onClick={handleDisconnect}
+                className="w-full py-3 rounded-2xl border border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors"
+              >
+                Disconnect
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleConnect}
+              disabled={isConnecting || isLoading}
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#836EF9] to-[#4FFFFF] text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {isConnecting || isLoading ? 'Connecting...' : 'Connect MetaMask'}
+            </button>
+          )}
         </motion.div>
 
         {/* Menu Items */}
@@ -124,7 +190,7 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#94A3B8]">Network</span>
-              <span className="text-[#4FFFFF]">Monad Mainnet</span>
+              <span className="text-[#4FFFFF]">Monad Testnet</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#94A3B8]">Block Height</span>
@@ -134,15 +200,18 @@ export function SettingsScreen({ onNavigate }: SettingsScreenProps) {
         </motion.div>
 
         {/* Logout Button */}
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="w-full py-4 rounded-full border-2 border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors flex items-center justify-center gap-2"
-        >
-          <LogOut className="w-5 h-5" />
-          Disconnect Wallet
-        </motion.button>
+        {isConnected && (
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            onClick={handleDisconnect}
+            className="w-full py-4 rounded-full border-2 border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors flex items-center justify-center gap-2"
+          >
+            <LogOut className="w-5 h-5" />
+            Disconnect Wallet
+          </motion.button>
+        )}
       </div>
     </div>
   );

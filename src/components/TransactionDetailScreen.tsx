@@ -76,7 +76,7 @@ export function TransactionDetailScreen({ onNavigate, transaction }: Transaction
           </p>
           <p className="mono text-2xl text-white mb-4">{otherParty.handle}</p>
           <p className={`balance text-5xl ${transaction.type === 'received' ? 'text-[#10B981]' : 'text-white'}`}>
-            {transaction.type === 'received' ? '+' : '-'}${transaction.amount.toFixed(2)}
+            {transaction.type === 'received' ? '+' : '-'}{transaction.amount.toFixed(4)} MON
           </p>
           {transaction.note && (
             <p className="text-[#94A3B8] mt-4 text-lg">{transaction.note}</p>
@@ -113,7 +113,7 @@ export function TransactionDetailScreen({ onNavigate, transaction }: Transaction
 
             <div className="flex justify-between items-center py-3 border-b border-white/5">
               <span className="text-[#94A3B8]">Network Fee</span>
-              <span className="text-[#10B981] balance">${transaction.gasUsed.toFixed(4)}</span>
+              <span className="text-[#10B981] balance">{transaction.gasUsed.toFixed(4)} MON</span>
             </div>
           </div>
         </motion.div>

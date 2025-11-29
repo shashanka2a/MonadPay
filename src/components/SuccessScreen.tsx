@@ -17,7 +17,7 @@ interface SuccessScreenProps {
 
 export function SuccessScreen({ onNavigate, data }: SuccessScreenProps) {
   const [copied, setCopied] = useState(false);
-  const txHash = '0x' + Math.random().toString(16).slice(2, 66);
+  const txHash = data.txHash || '0x' + Math.random().toString(16).slice(2, 66);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(txHash);
@@ -92,7 +92,7 @@ export function SuccessScreen({ onNavigate, data }: SuccessScreenProps) {
         >
           <h1 className="text-4xl mb-4">Payment Sent!</h1>
           <p className="text-xl text-white/80 mb-2">
-            Sent <span className="balance text-[#4FFFFF]">${data.amount.toFixed(2)}</span> to{' '}
+            Sent <span className="balance text-[#4FFFFF]">{data.amount.toFixed(4)} MON</span> to{' '}
             <span className="mono text-[#836EF9]">{data.recipient.handle}</span>
           </p>
         </motion.div>
@@ -112,7 +112,7 @@ export function SuccessScreen({ onNavigate, data }: SuccessScreenProps) {
               </div>
               <div>
                 <p className="text-[#94A3B8] text-sm mb-1">Gas Fee</p>
-                <p className="balance text-2xl text-[#10B981]">&lt; ${data.gasUsed.toFixed(4)}</p>
+                <p className="balance text-2xl text-[#10B981]">&lt; {data.gasUsed.toFixed(4)} MON</p>
               </div>
             </div>
           </div>

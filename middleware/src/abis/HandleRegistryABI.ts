@@ -11,3 +11,4 @@ export const HandleRegistryABI = [
   'event HandleMapped(address indexed wallet, string handle, uint256 timestamp)',
 ];
 
+

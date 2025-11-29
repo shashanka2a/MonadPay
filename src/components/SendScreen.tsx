@@ -146,7 +146,7 @@ export function SendScreen({ onNavigate, data }: SendScreenProps & { data?: any 
         >
           <div className="text-center mb-4">
             <div className="balance text-6xl text-white mb-2">
-              ${amount || '0'}
+              {amount || '0'} MON
             </div>
             <p className="text-[#94A3B8]">Enter amount</p>
           </div>

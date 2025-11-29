@@ -51,7 +51,7 @@ export function RequestScreen({ onNavigate }: RequestScreenProps) {
     if (navigator.share) {
       await navigator.share({
         title: 'monadpay Request',
-        text: `${currentUser.handle} is requesting $${amount}${note ? ` for ${note}` : ''}`,
+        text: `${currentUser.handle} is requesting ${amount} MON${note ? ` for ${note}` : ''}`,
         url: requestLink
       });
     }
@@ -89,7 +89,7 @@ export function RequestScreen({ onNavigate }: RequestScreenProps) {
           {/* Request Details */}
           <div className="text-center mb-8">
             <p className="text-[#94A3B8] mb-2">Requesting</p>
-            <p className="balance text-5xl text-white mb-4">${amount}</p>
+            <p className="balance text-5xl text-white mb-4">{amount} MON</p>
             {note && (
               <p className="text-[#94A3B8]">{note}</p>
             )}
@@ -144,7 +144,7 @@ export function RequestScreen({ onNavigate }: RequestScreenProps) {
       <div className="flex-1 flex flex-col justify-center px-6">
         <div className="text-center mb-8">
           <div className="balance text-6xl text-white mb-2">
-            ${amount || '0'}
+            {amount || '0'} MON
           </div>
           <p className="text-[#94A3B8]">Enter amount to request</p>
         </div>

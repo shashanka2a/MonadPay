@@ -26,6 +26,11 @@ export const mockUsers: Record<string, User> = {
     handle: '@dana',
     address: '0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=dana'
+  },
+  '@niharika': {
+    handle: '@niharika',
+    address: '0x8ba1f109551bD432803012645Hac136c22C1779',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=niharika'
   }
 };
 

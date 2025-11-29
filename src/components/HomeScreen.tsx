@@ -5,7 +5,8 @@ import { currentUser, mockTransactions } from '../utils/mockData';
 import { Transaction } from '../types';
 import { motion } from 'motion/react';
 import { QuickActions } from './QuickActions';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useWallet } from '../hooks/useWallet';
 
 interface HomeScreenProps {
   onNavigate: (screen: string, data?: any) => void;
@@ -15,15 +16,31 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
   const [balance, setBalance] = useState(4250.50);
   const [todayChange, setTodayChange] = useState(120.00);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { isConnected, balance: walletBalance, updateBalance } = useWallet();
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setIsRefreshing(true);
-    setTimeout(() => {
-      setBalance(4250.50 + Math.random() * 100);
-      setTodayChange(120.00 + Math.random() * 50);
-      setIsRefreshing(false);
-    }, 1000);
+    if (isConnected) {
+      await updateBalance();
+      const bal = parseFloat(walletBalance || '0');
+      setBalance(bal);
+    } else {
+      // Mock refresh for demo
+      setTimeout(() => {
+        setBalance(4250.50 + Math.random() * 100);
+        setTodayChange(120.00 + Math.random() * 50);
+        setIsRefreshing(false);
+      }, 1000);
+    }
+    setIsRefreshing(false);
   };
+
+  // Update balance from wallet when connected
+  useEffect(() => {
+    if (isConnected && walletBalance) {
+      setBalance(parseFloat(walletBalance));
+    }
+  }, [isConnected, walletBalance]);
 
   const handleQuickAction = (action: string) => {
     switch (action) {
@@ -101,11 +118,11 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
           transition={{ duration: 0.5 }}
         >
           <h1 className="balance text-6xl mb-4">
-            ${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {balance.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} MON
           </h1>
           <div className="flex items-center justify-center gap-2 text-[#10B981]">
             <TrendingUp className="w-4 h-4" />
-            <span className="balance">+${todayChange.toFixed(2)} (Today)</span>
+            <span className="balance">+{todayChange.toFixed(4)} MON (Today)</span>
           </div>
         </motion.div>
       </div>
@@ -145,7 +162,7 @@ export function HomeScreen({ onNavigate }: HomeScreenProps) {
                   </div>
                 </div>
                 <div className={`balance text-xl ${tx.type === 'received' ? 'text-[#10B981]' : 'text-white/70'}`}>
-                  {tx.type === 'received' ? '+' : '-'}${tx.amount.toFixed(2)}
+                  {tx.type === 'received' ? '+' : '-'}{tx.amount.toFixed(4)} MON
                 </div>
               </div>
             </motion.div>

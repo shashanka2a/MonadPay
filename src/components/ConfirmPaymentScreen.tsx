@@ -4,6 +4,8 @@ import { ArrowLeft, AlertCircle } from 'lucide-react';
 import { User } from '../types';
 import { motion } from 'motion/react';
 import { useState } from 'react';
+import { walletService } from '../utils/wallet';
+import { useWallet } from '../hooks/useWallet';
 
 interface ConfirmPaymentScreenProps {
   onNavigate: (screen: string, data?: any) => void;
@@ -16,23 +18,80 @@ interface ConfirmPaymentScreenProps {
 
 export function ConfirmPaymentScreen({ onNavigate, data }: ConfirmPaymentScreenProps) {
   const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { recipient, amount, note } = data;
+  const { isConnected, address } = useWallet();
 
-  const estimatedGas = 0.0008;
+  // Get contract addresses from environment or use defaults
+  const PAYMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_PAYMENT_CONTRACT_ADDRESS || '';
+  const HANDLE_REGISTRY_ADDRESS = process.env.NEXT_PUBLIC_HANDLE_REGISTRY_ADDRESS || '';
+
+  const estimatedGas = 0.0008; // Estimated gas in MON
   const total = amount + estimatedGas;
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    if (!isConnected) {
+      setError('Please connect your wallet first');
+      return;
+    }
+
     setIsSending(true);
-    
-    // Simulate blockchain transaction
-    setTimeout(() => {
+    setError(null);
+
+    try {
+      let txHash: string;
+      const startTime = Date.now();
+
+      // Check if recipient has a handle or is an address
+      if (recipient.handle && recipient.handle.startsWith('@')) {
+        // Send via handle
+        if (!PAYMENT_CONTRACT_ADDRESS) {
+          throw new Error('Payment contract address not configured');
+        }
+        
+        const tx = await walletService.sendPayment(
+          recipient.handle,
+          amount.toString(),
+          note || '',
+          PAYMENT_CONTRACT_ADDRESS
+        );
+        
+        txHash = tx.hash;
+      } else {
+        // Send directly to address
+        if (!PAYMENT_CONTRACT_ADDRESS) {
+          throw new Error('Payment contract address not configured');
+        }
+        
+        const tx = await walletService.sendPaymentToAddress(
+          recipient.address,
+          amount.toString(),
+          note || '',
+          PAYMENT_CONTRACT_ADDRESS
+        );
+        
+        txHash = tx.hash;
+      }
+
+      // Wait for transaction confirmation
+      const receipt = await walletService.waitForTransaction(txHash);
+      const duration = (Date.now() - startTime) / 1000;
+      const gasUsed = parseFloat(receipt.gasUsed.toString()) * parseFloat(receipt.gasPrice?.toString() || '0') / 1e18;
+
       onNavigate('success', {
         recipient,
         amount,
-        duration: Math.random() * 0.5 + 0.5,
-        gasUsed: estimatedGas
+        note,
+        txHash,
+        duration,
+        gasUsed,
+        blockNumber: receipt.blockNumber,
       });
-    }, 1500);
+    } catch (err: any) {
+      console.error('Transaction error:', err);
+      setError(err.message || 'Transaction failed. Please try again.');
+      setIsSending(false);
+    }
   };
 
   return (
@@ -83,7 +142,7 @@ export function ConfirmPaymentScreen({ onNavigate, data }: ConfirmPaymentScreenP
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-[#94A3B8]">Amount</span>
-                <span className="balance text-3xl text-white">${amount.toFixed(2)}</span>
+                <span className="balance text-3xl text-white">{amount.toFixed(4)} MON</span>
               </div>
               
               {note && (
@@ -105,7 +164,7 @@ export function ConfirmPaymentScreen({ onNavigate, data }: ConfirmPaymentScreenP
             <div className="space-y-3">
               <div className="flex justify-between items-center text-sm">
                 <span className="text-[#94A3B8]">Network Fee</span>
-                <span className="balance text-[#10B981]">${estimatedGas.toFixed(4)}</span>
+                <span className="balance text-[#10B981]">~{estimatedGas.toFixed(4)} MON</span>
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span className="text-[#94A3B8]">Estimated Time</span>
@@ -113,7 +172,7 @@ export function ConfirmPaymentScreen({ onNavigate, data }: ConfirmPaymentScreenP
               </div>
               <div className="pt-3 border-t border-white/10 flex justify-between items-center">
                 <span className="text-white">Total</span>
-                <span className="balance text-2xl text-white">${total.toFixed(4)}</span>
+                <span className="balance text-2xl text-white">{total.toFixed(4)} MON</span>
               </div>
             </div>
           </motion.div>
@@ -130,6 +189,17 @@ export function ConfirmPaymentScreen({ onNavigate, data }: ConfirmPaymentScreenP
               Double-check the recipient before confirming. Blockchain transactions are irreversible.
             </p>
           </motion.div>
+
+          {/* Error Message */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-4 bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-2xl"
+            >
+              <p className="text-sm text-[#EF4444]">{error}</p>
+            </motion.div>
+          )}
         </div>
 
         {/* Confirm Button */}
@@ -151,7 +221,7 @@ export function ConfirmPaymentScreen({ onNavigate, data }: ConfirmPaymentScreenP
               Processing...
             </>
           ) : (
-            `Confirm & Send $${amount.toFixed(2)}`
+            `Confirm & Send ${amount.toFixed(4)} MON`
           )}
         </motion.button>
       </div>

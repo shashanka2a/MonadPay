@@ -17,3 +17,4 @@ export default function ActivityPage() {
   return <ActivityScreen onNavigate={handleNavigate} />;
 }
 
+

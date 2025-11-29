@@ -17,3 +17,4 @@ export default function SettingsPage() {
   return <SettingsScreen onNavigate={handleNavigate} />;
 }
 
+

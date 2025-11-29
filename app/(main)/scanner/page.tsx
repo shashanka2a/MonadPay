@@ -17,3 +17,4 @@ export default function ScannerPage() {
   return <QRScannerScreen onNavigate={handleNavigate} />;
 }
 
+
